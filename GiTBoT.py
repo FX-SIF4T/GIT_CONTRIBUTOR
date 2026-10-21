@@ -24,28 +24,28 @@ from telegram.ext import (
 
 API_ROOT = "https://api.github.com"
 DEFAULT_FILE_PATH = "contribution-log.txt"
-MIN_INTERVAL_MINUTES = 5
+MIN_INTERVAL_MINUTES = 1
 MAX_INTERVAL_MINUTES = 43200
 MAX_LOG_LINES = 1000
 MAX_UPLOAD_BYTES = 700_000
-HARDCODED_TELEGRAM_BOT_TOKEN = ""
+HARDCODED_TELEGRAM_BOT_TOKEN = "PASTE YOUR TELEGRAM BOT TOKEN"
 HARDCODED_ADMIN_IDS: set[int] = set()
 
-BUTTON_ACCOUNTS = "ᴀᴄᴄᴏᴜɴᴛs"
-BUTTON_REPOSITORIES = "ʀᴇᴘᴏsɪᴛᴏʀɪᴇs"
-BUTTON_ADD_ACCOUNT = "ᴀᴅᴅ ᴀᴄᴄᴏᴜɴᴛ"
-BUTTON_ADD_REPOSITORY = "ᴀᴅᴅ ʀᴇᴘᴏ"
-BUTTON_MANAGE_ACCOUNT = "ᴍᴀɴᴀɢᴇ ᴀᴄᴄᴏᴜɴᴛ"
-BUTTON_MANAGE_REPOSITORY = "ᴍᴀɴᴀɢᴇ ʀᴇᴘᴏ"
-BUTTON_FILE_PATH = "sᴇᴛ ʙᴏᴛ ғɪʟᴇ"
-BUTTON_UPLOAD_FILE = "ᴜᴘʟᴏᴀᴅ ғɪʟᴇ"
-BUTTON_INTERVAL = "sᴇᴛ ɪɴᴛᴇʀᴠᴀʟ"
-BUTTON_MESSAGE = "sᴇᴛ ᴍᴇssᴀɢᴇ"
-BUTTON_START_ALL = "sᴛᴀʀᴛ ᴀʟʟ"
-BUTTON_STOP_ALL = "sᴛᴏᴘ ᴀʟʟ"
-BUTTON_COMMIT_NOW = "ᴄᴏᴍᴍɪᴛ ɴᴏᴡ"
-BUTTON_STATUS = "sᴛᴀᴛᴜs"
-BUTTON_HELP = "ʜᴇʟᴘ"
+BUTTON_ACCOUNTS = "❨ ᴀᴄᴄᴏᴜɴᴛs ❩"
+BUTTON_REPOSITORIES = "❨ ʀᴇᴘᴏsɪᴛᴏʀɪᴇs ❩"
+BUTTON_ADD_ACCOUNT = "❨ ᴀᴅᴅ ᴀᴄᴄᴏᴜɴᴛ ❩"
+BUTTON_ADD_REPOSITORY = "❨ ᴀᴅᴅ ʀᴇᴘᴏ ❩"
+BUTTON_MANAGE_ACCOUNT = "❨ ᴍᴀɴᴀɢᴇ ᴀᴄᴄᴏᴜɴᴛ ❩"
+BUTTON_MANAGE_REPOSITORY = "❨ ᴍᴀɴᴀɢᴇ ʀᴇᴘᴏ ❩"
+BUTTON_FILE_PATH = "❨ sᴇᴛ ʙᴏᴛ ғɪʟᴇ ❩"
+BUTTON_UPLOAD_FILE = "❨ ᴜᴘʟᴏᴀᴅ ғɪʟᴇ ❩"
+BUTTON_INTERVAL = "❨ sᴇᴛ ᴛɪᴍᴇ ❩"
+BUTTON_MESSAGE = "❨ sᴇᴛ ᴍᴇssᴀɢᴇ ❩"
+BUTTON_START_ALL = "❨ sᴛᴀʀᴛ ᴀʟʟ ❩"
+BUTTON_STOP_ALL = "❨ sᴛᴏᴘ ᴀʟʟ ❩"
+BUTTON_COMMIT_NOW = "❨ ᴄᴏᴍᴍɪᴛ ɴᴏᴡ ❩"
+BUTTON_STATUS = "❨ sᴛᴀᴛᴜs ❩"
+BUTTON_HELP = "❨ ʜᴇʟᴘ ❩"
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -141,7 +141,7 @@ async def require_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> b
         return False
     if not is_admin(update, context):
         if update.effective_message:
-            await update.effective_message.reply_text("⟦ ᴀᴄᴄᴇss ᴅᴇɴɪᴇᴅ ⟧")
+            await update.effective_message.reply_text("❑ ᴀᴄᴄᴇss ᴅᴇɴɪᴇᴅ ❒")
         return False
     return True
 
@@ -463,10 +463,10 @@ async def schedule_loop(
                 target.last_error = ""
             except GitHubError as error:
                 target.last_error = f"ɢɪᴛʜᴜʙ ʀᴇǫᴜᴇsᴛ ғᴀɪʟᴇᴅ · {error.status_code}"
-                await send_to_user(context, user_id, f"⟦ {repo_id} · {target.last_error} ⟧")
+                await send_to_user(context, user_id, f"❑ {repo_id} · {target.last_error} ❒")
             except (httpx.HTTPError, ValueError, UnicodeError, json.JSONDecodeError):
                 target.last_error = "ғɪʟᴇ ᴏʀ ɴᴇᴛᴡᴏʀᴋ ᴇʀʀᴏʀ · ᴄʜᴇᴄᴋ ᴛʜᴇ ᴘᴀᴛʜ ᴀɴᴅ ғɪʟᴇ ғᴏʀᴍᴀᴛ"
-                await send_to_user(context, user_id, f"⟦ {repo_id} · {target.last_error} ⟧")
+                await send_to_user(context, user_id, f"❑ {repo_id} · {target.last_error} ❒")
     except asyncio.CancelledError:
         raise
 
@@ -503,8 +503,8 @@ def find_repository(state: UserState, repo_id: str) -> RepoSchedule | None:
 
 def render_account_list(state: UserState) -> str:
     if not state.accounts:
-        return "⟦ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛs ⟧\n\nɴᴏ ᴀᴄᴄᴏᴜɴᴛs ᴀᴅᴅᴇᴅ"
-    lines = ["⟦ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛs ⟧"]
+        return "❑ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛs ❒\n\nɴᴏ ᴀᴄᴄᴏᴜɴᴛs ᴀᴅᴅᴇᴅ"
+    lines = ["❑ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛs ❒"]
     for account in state.accounts.values():
         repo_count = sum(1 for target in state.repositories.values() if target.account_id == account.account_id)
         lines.append(f"{account.account_id} · {account.login} · {repo_count} ʀᴇᴘᴏs")
@@ -513,8 +513,8 @@ def render_account_list(state: UserState) -> str:
 
 def render_repository_list(state: UserState) -> str:
     if not state.repositories:
-        return "⟦ ʀᴇᴘᴏsɪᴛᴏʀɪᴇs ⟧\n\nɴᴏ ʀᴇᴘᴏsɪᴛᴏʀɪᴇs ᴀᴅᴅᴇᴅ"
-    lines = ["⟦ ʀᴇᴘᴏsɪᴛᴏʀɪᴇs · sᴄʜᴇᴅᴜʟᴇs ⟧"]
+        return "❑ ʀᴇᴘᴏsɪᴛᴏʀɪᴇs ❒\n\nɴᴏ ʀᴇᴘᴏsɪᴛᴏʀɪᴇs ᴀᴅᴅᴇᴅ"
+    lines = ["❑ ʀᴇᴘᴏsɪᴛᴏʀɪᴇs · sᴄʜᴇᴅᴜʟᴇs ❒"]
     for target in state.repositories.values():
         account = state.accounts.get(target.account_id)
         owner = account.login if account else "ᴜɴʟɪɴᴋᴇᴅ"
@@ -589,7 +589,7 @@ async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await update.effective_message.reply_text("ᴘʟᴇᴀsᴇ ᴜsᴇ ᴛʜɪs ʙᴏᴛ ɪɴ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ.")
         return
     clear_flow(context)
-    await send_panel(update, "⟦ ᴄᴜʀʀᴇɴᴛ ᴀᴄᴛɪᴏɴ ᴄᴀɴᴄᴇʟʟᴇᴅ ⟧")
+    await send_panel(update, "❑ ᴄᴜʀʀᴇɴᴛ ᴀᴄᴛɪᴏɴ ᴄᴀɴᴄᴇʟʟᴇᴅ ❒")
 
 
 async def myid_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -597,7 +597,7 @@ async def myid_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         await update.effective_message.reply_text("ᴘʟᴇᴀsᴇ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ.")
         return
     await update.effective_message.reply_text(
-        f"⟦ ʏᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ᴜsᴇʀ ɪᴅ · {update.effective_user.id} ⟧",
+        f"❑ ʏᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ᴜsᴇʀ ɪᴅ · {update.effective_user.id} ❒",
         reply_markup=main_keyboard(),
     )
 
@@ -606,7 +606,7 @@ async def admin_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if not await require_admin(update, context):
         return
     await update.effective_message.reply_text(
-        "⟦ ᴀᴅᴍɪɴ ᴄᴏɴsᴏʟᴇ ⟧\n\n"
+        "❑ ᴀᴅᴍɪɴ ᴄᴏɴsᴏʟᴇ ❒\n\n"
         "/admin_stats · sᴇʀᴠɪᴄᴇ ᴄᴏᴜɴᴛs\n"
         "/admin_users · ᴜsᴇʀ ɪᴅ ᴀɴᴅ ᴄᴏᴜɴᴛs ᴏɴʟʏ\n"
         "/admin_stopall · sᴛᴏᴘ ᴀʟʟ sᴄʜᴇᴅᴜʟᴇs\n"
@@ -628,7 +628,7 @@ async def admin_stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE
         if target.task and not target.task.done()
     )
     await update.effective_message.reply_text(
-        "⟦ ʙᴏᴛ sᴛᴀᴛɪsᴛɪᴄs ⟧\n\n"
+        "❑ ʙᴏᴛ sᴛᴀᴛɪsᴛɪᴄs ❒\n\n"
         f"ᴜsᴇʀs · {len(users)}\nᴀᴄᴄᴏᴜɴᴛs · {accounts}\n"
         f"ʀᴇᴘᴏsɪᴛᴏʀɪᴇs · {repositories}\nᴀᴄᴛɪᴠᴇ sᴄʜᴇᴅᴜʟᴇs · {running}",
         reply_markup=main_keyboard(),
@@ -639,7 +639,7 @@ async def admin_users_command(update: Update, context: ContextTypes.DEFAULT_TYPE
     if not await require_admin(update, context):
         return
     users: dict[int, UserState] = context.application.bot_data["users"]
-    lines = ["⟦ ᴜsᴇʀs · ɪᴅ ᴀɴᴅ ᴄᴏᴜɴᴛs ⟧"]
+    lines = ["❑ ᴜsᴇʀs · ɪᴅ ᴀɴᴅ ᴄᴏᴜɴᴛs ❒"]
     for user_id, state in sorted(users.items()):
         running = sum(
             1 for target in state.repositories.values()
@@ -669,7 +669,7 @@ async def admin_stopall_command(update: Update, context: ContextTypes.DEFAULT_TY
         if stop_schedule(target)
     )
     await update.effective_message.reply_text(
-        f"⟦ ᴀʟʟ sᴄʜᴇᴅᴜʟᴇs sᴛᴏᴘᴘᴇᴅ · {stopped} ⟧",
+        f"❑ ᴀʟʟ sᴄʜᴇᴅᴜʟᴇs sᴛᴏᴘᴘᴇᴅ · {stopped} ❒",
         reply_markup=main_keyboard(),
     )
 
@@ -679,7 +679,7 @@ async def admin_reset_command(update: Update, context: ContextTypes.DEFAULT_TYPE
         return
     if len(context.args) != 1 or not context.args[0].isdecimal():
         await update.effective_message.reply_text(
-            "⟦ ᴜsᴇ · /admin_reset <user_id> ⟧",
+            "❑ ᴜsᴇ · /admin_reset <user_id> ❒",
             reply_markup=main_keyboard(),
         )
         return
@@ -694,12 +694,12 @@ async def admin_reset_command(update: Update, context: ContextTypes.DEFAULT_TYPE
         user_data.clear()
     if state is None:
         await update.effective_message.reply_text(
-            "⟦ ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ ⟧",
+            "❑ ᴜsᴇʀ ɴᴏᴛ ғᴏᴜɴᴅ ❒",
             reply_markup=main_keyboard(),
         )
         return
     await update.effective_message.reply_text(
-        f"⟦ ᴜsᴇʀ sᴇᴛᴜᴘ ᴄʟᴇᴀʀᴇᴅ · {target_id} ⟧",
+        f"❑ ᴜsᴇʀ sᴇᴛᴜᴘ ᴄʟᴇᴀʀᴇᴅ · {target_id} ❒",
         reply_markup=main_keyboard(),
     )
 
@@ -720,14 +720,14 @@ async def handle_menu_action(
         context.user_data["flow_step"] = "account_token"
         await send_panel(
             update,
-            "⟦ ᴀᴅᴅ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛ ⟧\n\n"
+            "❑ ᴀᴅᴅ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛ ❒\n\n"
             "sᴇɴᴅ ᴀ ɢɪᴛʜᴜʙ ᴘᴇʀsᴏɴᴀʟ ᴀᴄᴄᴇss ᴛᴏᴋᴇɴ ɪɴ ᴛʜɪs ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ.\n"
             "ɴᴇᴇᴅs ʀᴇᴘᴏsɪᴛᴏʀʏ ᴄᴏɴᴛᴇɴᴛs ʀᴇᴀᴅ ᴀɴᴅ ᴡʀɪᴛᴇ.\n"
             "ᴜsᴇ /cancel ᴛᴏ ᴇxɪᴛ.",
         )
     elif action == BUTTON_ADD_REPOSITORY:
         if not state.accounts:
-            await send_panel(update, "⟦ ᴀᴅᴅ ᴀ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛ ғɪʀsᴛ ⟧")
+            await send_panel(update, "❑ ᴀᴅᴅ ᴀ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛ ғɪʀsᴛ ❒")
             return
         context.user_data["flow_step"] = "repo_account"
         await send_panel(update, render_account_list(state) + "\n\nsᴇɴᴅ ᴛʜᴇ ᴀᴄᴄᴏᴜɴᴛ ɪᴅ ғᴏʀ ᴛʜᴇ ɴᴇᴡ ʀᴇᴘᴏ.")
@@ -747,44 +747,44 @@ async def handle_menu_action(
         )
     elif action == BUTTON_FILE_PATH:
         if not state.repositories:
-            await send_panel(update, "⟦ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ⟧")
+            await send_panel(update, "❑ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ❒")
             return
         context.user_data["flow_step"] = "file_repo"
         await send_panel(update, render_repository_list(state) + "\n\nsᴇɴᴅ ᴛʜᴇ ʀᴇᴘᴏ ɪᴅ ᴛᴏ sᴇᴛ ɪᴛs ʙᴏᴛ ғɪʟᴇ ɴᴀᴍᴇ.")
     elif action == BUTTON_UPLOAD_FILE:
         if not state.repositories:
-            await send_panel(update, "⟦ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ⟧")
+            await send_panel(update, "❑ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ❒")
             return
         context.user_data["flow_step"] = "upload_repo"
         await send_panel(update, render_repository_list(state) + "\n\nsᴇɴᴅ ᴛʜᴇ ʀᴇᴘᴏ ɪᴅ ғᴏʀ ᴛʜᴇ ғɪʟᴇ ᴜᴘʟᴏᴀᴅ.")
     elif action == BUTTON_INTERVAL:
         if not state.repositories:
-            await send_panel(update, "⟦ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ⟧")
+            await send_panel(update, "❑ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ❒")
             return
         context.user_data["flow_step"] = "interval_repo"
         await send_panel(update, render_repository_list(state) + "\n\nsᴇɴᴅ ᴛʜᴇ ʀᴇᴘᴏ ɪᴅ ᴛᴏ ᴄʜᴀɴɢᴇ ɪᴛs ɪɴᴛᴇʀᴠᴀʟ.")
     elif action == BUTTON_MESSAGE:
         if not state.repositories:
-            await send_panel(update, "⟦ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ⟧")
+            await send_panel(update, "❑ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ❒")
             return
         context.user_data["flow_step"] = "message_repo"
         await send_panel(update, render_repository_list(state) + "\n\nsᴇɴᴅ ᴛʜᴇ ʀᴇᴘᴏ ɪᴅ ᴛᴏ ᴄʜᴀɴɢᴇ ɪᴛs ᴄᴏᴍᴍɪᴛ ᴍᴇssᴀɢᴇ.")
     elif action == BUTTON_START_ALL:
         started = sum(start_schedule(user_id, target, context) for target in state.repositories.values())
-        await send_panel(update, f"⟦ sᴄʜᴇᴅᴜʟᴇs sᴛᴀʀᴛᴇᴅ · {started} ⟧")
+        await send_panel(update, f"❑ sᴄʜᴇᴅᴜʟᴇs sᴛᴀʀᴛᴇᴅ · {started} ❒")
     elif action == BUTTON_STOP_ALL:
         stopped = sum(stop_schedule(target) for target in state.repositories.values())
-        await send_panel(update, f"⟦ sᴄʜᴇᴅᴜʟᴇs sᴛᴏᴘᴘᴇᴅ · {stopped} ⟧")
+        await send_panel(update, f"❑ sᴄʜᴇᴅᴜʟᴇs sᴛᴏᴘᴘᴇᴅ · {stopped} ❒")
     elif action == BUTTON_COMMIT_NOW:
         if not state.repositories:
-            await send_panel(update, "⟦ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ⟧")
+            await send_panel(update, "❑ ᴀᴅᴅ ᴀ ʀᴇᴘᴏsɪᴛᴏʀʏ ғɪʀsᴛ ❒")
             return
         context.user_data["flow_step"] = "commit_repo"
         await send_panel(update, render_repository_list(state) + "\n\nsᴇɴᴅ ᴛʜᴇ ʀᴇᴘᴏ ɪᴅ ғᴏʀ ᴀɴ ɪᴍᴍᴇᴅɪᴀᴛᴇ ᴄᴏᴍᴍɪᴛ.")
     else:
         await send_panel(
             update,
-            "⟦ ᴏᴘᴇʀᴀᴛɪᴏɴ ⟧\n\n"
+            "❑ ᴏᴘᴇʀᴀᴛɪᴏɴ ❒\n\n"
             "ᴀᴅᴅ ᴀᴄᴄᴏᴜɴᴛs ᴀɴᴅ ʀᴇᴘᴏs, ᴏʀ ᴜsᴇ ᴛʜᴇ ʟɪsᴛ ʙᴜᴛᴛᴏɴs ᴛᴏ ᴍᴀɴᴀɢᴇ ᴛʜᴇᴍ.\n"
             "ᴇᴀᴄʜ ʀᴇᴘᴏ ʜᴀs ɪᴛs ᴏᴡɴ ɪɴᴛᴇʀᴠᴀʟ, ғɪʟᴇ ɴᴀᴍᴇ, ᴀɴᴅ ᴄᴏᴍᴍɪᴛ ᴍᴇssᴀɢᴇ.\n"
             "ᴜᴘʟᴏᴀᴅ ғɪʟᴇ ᴄᴏᴍᴍɪᴛs ɴᴏᴡ; ʙᴏᴛ ғɪʟᴇs ʀᴜɴ ᴏɴ ᴛʜᴇ sᴄʜᴇᴅᴜʟᴇ.\n"
@@ -832,11 +832,11 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             author_name, author_email = await get_author_identity(token, profile)
         except GitHubError:
             context.user_data.pop("flow_step", None)
-            await send_to_user(context, user_id, "⟦ ᴛᴏᴋᴇɴ ᴠᴀʟɪᴅᴀᴛɪᴏɴ ғᴀɪʟᴇᴅ · ᴛʀʏ ᴀɢᴀɪɴ ⟧")
+            await send_to_user(context, user_id, "❑ ᴛᴏᴋᴇɴ ᴠᴀʟɪᴅᴀᴛɪᴏɴ ғᴀɪʟᴇᴅ · ᴛʀʏ ᴀɢᴀɪɴ ❒")
             return
         except httpx.HTTPError:
             context.user_data.pop("flow_step", None)
-            await send_to_user(context, user_id, "⟦ ɴᴇᴛᴡᴏʀᴋ ᴇʀʀᴏʀ · ᴛʀʏ ᴀɢᴀɪɴ ⟧")
+            await send_to_user(context, user_id, "❑ ɴᴇᴛᴡᴏʀᴋ ᴇʀʀᴏʀ · ᴛʀʏ ᴀɢᴀɪɴ ❒")
             return
         account_id = f"A{state.next_account_number}"
         state.next_account_number += 1
@@ -851,18 +851,18 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         await send_to_user(
             context,
             user_id,
-            f"⟦ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛ ᴀᴅᴅᴇᴅ · {account_id} · {profile.get('login', 'github-user')} ⟧",
+            f"❑ ɢɪᴛʜᴜʙ ᴀᴄᴄᴏᴜɴᴛ ᴀᴅᴅᴇᴅ · {account_id} · {profile.get('login', 'github-user')} ❒",
         )
         return
 
     if step == "repo_account":
         account = find_account(state, text)
         if not account:
-            await send_panel(update, "⟦ ᴀᴄᴄᴏᴜɴᴛ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ⟧")
+            await send_panel(update, "❑ ᴀᴄᴄᴏᴜɴᴛ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ❒")
             return
         context.user_data["selected_account_id"] = account.account_id
         context.user_data["flow_step"] = "repo_url"
-        await send_panel(update, "⟦ ʀᴇᴘᴏsɪᴛᴏʀʏ ⟧\n\nsᴇɴᴅ ᴏᴡɴᴇʀ/ʀᴇᴘᴏ ᴏʀ ᴀ ɢɪᴛʜᴜʙ ᴜʀʟ.")
+        await send_panel(update, "❑ ʀᴇᴘᴏsɪᴛᴏʀʏ ❒\n\nsᴇɴᴅ ᴏᴡɴᴇʀ/ʀᴇᴘᴏ ᴏʀ ᴀ ɢɪᴛʜᴜʙ ᴜʀʟ.")
         return
 
     if step == "repo_url":
@@ -870,25 +870,25 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         account_id = context.user_data.get("selected_account_id", "")
         account = find_account(state, account_id)
         if not repository or not account:
-            await send_panel(update, "⟦ ɪɴᴠᴀʟɪᴅ ʀᴇᴘᴏsɪᴛᴏʀʏ ᴏʀ ᴀᴄᴄᴏᴜɴᴛ · ᴛʀʏ ᴀɢᴀɪɴ ⟧")
+            await send_panel(update, "❑ ɪɴᴠᴀʟɪᴅ ʀᴇᴘᴏsɪᴛᴏʀʏ ᴏʀ ᴀᴄᴄᴏᴜɴᴛ · ᴛʀʏ ᴀɢᴀɪɴ ❒")
             return
         if any(target.repository.casefold() == repository.casefold() for target in state.repositories.values()):
             clear_flow(context)
-            await send_panel(update, "⟦ ᴛʜɪs ʀᴇᴘᴏsɪᴛᴏʀʏ ɪs ᴀʟʀᴇᴀᴅʏ ᴀᴅᴅᴇᴅ ⟧")
+            await send_panel(update, "❑ ᴛʜɪs ʀᴇᴘᴏsɪᴛᴏʀʏ ɪs ᴀʟʀᴇᴀᴅʏ ᴀᴅᴅᴇᴅ ❒")
             return
         try:
             repo_data = await validate_repository(account.token, repository)
         except GitHubError as error:
             if error.status_code == 404:
-                response = "⟦ ʀᴇᴘᴏsɪᴛᴏʀʏ ɴᴏᴛ ғᴏᴜɴᴅ ᴏʀ ɴᴏ ᴀᴄᴄᴇss ⟧"
+                response = "❑ ʀᴇᴘᴏsɪᴛᴏʀʏ ɴᴏᴛ ғᴏᴜɴᴅ ᴏʀ ɴᴏ ᴀᴄᴄᴇss ❒"
             elif error.status_code == 403:
-                response = "⟦ ᴛᴏᴋᴇɴ ɴᴇᴇᴅs ᴄᴏɴᴛᴇɴᴛs ʀᴇᴀᴅ ᴀɴᴅ ᴡʀɪᴛᴇ ⟧"
+                response = "❑ ᴛᴏᴋᴇɴ ɴᴇᴇᴅs ᴄᴏɴᴛᴇɴᴛs ʀᴇᴀᴅ ᴀɴᴅ ᴡʀɪᴛᴇ ❒"
             else:
-                response = "⟦ ᴄᴏᴜʟᴅ ɴᴏᴛ ᴠᴀʟɪᴅᴀᴛᴇ ʀᴇᴘᴏsɪᴛᴏʀʏ ⟧"
+                response = "❑ ᴄᴏᴜʟᴅ ɴᴏᴛ ᴠᴀʟɪᴅᴀᴛᴇ ʀᴇᴘᴏsɪᴛᴏʀʏ ❒"
             await send_panel(update, response)
             return
         except httpx.HTTPError:
-            await send_panel(update, "⟦ ɴᴇᴛᴡᴏʀᴋ ᴇʀʀᴏʀ · ᴛʀʏ ᴀɢᴀɪɴ ⟧")
+            await send_panel(update, "❑ ɴᴇᴛᴡᴏʀᴋ ᴇʀʀᴏʀ · ᴛʀʏ ᴀɢᴀɪɴ ❒")
             return
         repo_id = f"R{state.next_repo_number}"
         state.next_repo_number += 1
@@ -901,7 +901,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         clear_flow(context)
         await send_panel(
             update,
-            f"⟦ ʀᴇᴘᴏsɪᴛᴏʀʏ ᴀᴅᴅᴇᴅ · {repo_id} · {repository} ⟧\n"
+            f"❑ ʀᴇᴘᴏsɪᴛᴏʀʏ ᴀᴅᴅᴇᴅ · {repo_id} · {repository} ❒\n"
             f"ʙʀᴀɴᴄʜ · {repo_data.get('default_branch') or 'main'}\n"
             f"ʙᴏᴛ ғɪʟᴇ · {DEFAULT_FILE_PATH}\nɪɴɪᴛɪᴀʟ ɪɴᴛᴇʀᴠᴀʟ · 60 ᴍɪɴ",
         )
@@ -912,7 +912,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         match = re.fullmatch(r"REMOVE\s+(A\d+)", command)
         account = find_account(state, match.group(1) if match else "")
         if not account:
-            await send_panel(update, "⟦ sᴇɴᴅ ʀᴇᴍᴏᴠᴇ ᴀɴ ᴀᴄᴄᴏᴜɴᴛ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ⟧")
+            await send_panel(update, "❑ sᴇɴᴅ ʀᴇᴍᴏᴠᴇ ᴀɴ ᴀᴄᴄᴏᴜɴᴛ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ❒")
             return
         for repo_id, target in list(state.repositories.items()):
             if target.account_id == account.account_id:
@@ -920,45 +920,45 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
                 state.repositories.pop(repo_id, None)
         state.accounts.pop(account.account_id, None)
         clear_flow(context)
-        await send_panel(update, f"⟦ ᴀᴄᴄᴏᴜɴᴛ ᴀɴᴅ ʟɪɴᴋᴇᴅ ʀᴇᴘᴏs ʀᴇᴍᴏᴠᴇᴅ · {account.account_id} ⟧")
+        await send_panel(update, f"❑ ᴀᴄᴄᴏᴜɴᴛ ᴀɴᴅ ʟɪɴᴋᴇᴅ ʀᴇᴘᴏs ʀᴇᴍᴏᴠᴇᴅ · {account.account_id} ❒")
         return
 
     if step == "manage_repo":
         command = normalize_management_command(text)
         match = re.fullmatch(r"(REMOVE|START|STOP)\s+(R\d+)", command)
         if not match:
-            await send_panel(update, "⟦ sᴇɴᴅ ʀᴇᴍᴏᴠᴇ ʀ1, sᴛᴀʀᴛ ʀ1, ᴏʀ sᴛᴏᴘ ʀ1 ⟧")
+            await send_panel(update, "❑ sᴇɴᴅ ʀᴇᴍᴏᴠᴇ ʀ1, sᴛᴀʀᴛ ʀ1, ᴏʀ sᴛᴏᴘ ʀ1 ❒")
             return
         operation, repo_id = match.group(1).upper(), match.group(2).upper()
         target = find_repository(state, repo_id)
         if not target:
-            await send_panel(update, "⟦ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ ⟧")
+            await send_panel(update, "❑ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ ❒")
             return
         if operation == "REMOVE":
             stop_schedule(target)
             state.repositories.pop(target.repo_id, None)
             clear_flow(context)
-            await send_panel(update, f"⟦ ʀᴇᴘᴏsɪᴛᴏʀʏ ʀᴇᴍᴏᴠᴇᴅ · {target.repo_id} ⟧")
+            await send_panel(update, f"❑ ʀᴇᴘᴏsɪᴛᴏʀʏ ʀᴇᴍᴏᴠᴇᴅ · {target.repo_id} ❒")
         elif operation == "START":
             started = start_schedule(user_id, target, context)
             clear_flow(context)
-            await send_panel(update, f"⟦ {target.repo_id} · {'sᴄʜᴇᴅᴜʟᴇ sᴛᴀʀᴛᴇᴅ' if started else 'ᴀʟʀᴇᴀᴅʏ ᴀᴄᴛɪᴠᴇ'} ⟧")
+            await send_panel(update, f"❑ {target.repo_id} · {'sᴄʜᴇᴅᴜʟᴇ sᴛᴀʀᴛᴇᴅ' if started else 'ᴀʟʀᴇᴀᴅʏ ᴀᴄᴛɪᴠᴇ'} ❒")
         else:
             stopped = stop_schedule(target)
             clear_flow(context)
-            await send_panel(update, f"⟦ {target.repo_id} · {'sᴄʜᴇᴅᴜʟᴇ sᴛᴏᴘᴘᴇᴅ' if stopped else 'ɴᴏᴛ ᴀᴄᴛɪᴠᴇ'} ⟧")
+            await send_panel(update, f"❑ {target.repo_id} · {'sᴄʜᴇᴅᴜʟᴇ sᴛᴏᴘᴘᴇᴅ' if stopped else 'ɴᴏᴛ ᴀᴄᴛɪᴠᴇ'} ❒")
         return
 
     if step == "file_repo":
         target = find_repository(state, text)
         if not target:
-            await send_panel(update, "⟦ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ⟧")
+            await send_panel(update, "❑ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ❒")
             return
         context.user_data["selected_repo_id"] = target.repo_id
         context.user_data["flow_step"] = "file_path_value"
         await send_panel(
             update,
-            f"⟦ ʙᴏᴛ ғɪʟᴇ ɴᴀᴍᴇ · {target.repo_id} ⟧\n\n"
+            f"❑ ʙᴏᴛ ғɪʟᴇ ɴᴀᴍᴇ · {target.repo_id} ❒\n\n"
             "sᴇɴᴅ ᴀ ʀᴇʟᴀᴛɪᴠᴇ ᴘᴀᴛʜ, ғᴏʀ ᴇxᴀᴍᴘʟᴇ: ᴀʙᴄᴅ.ᴊs ᴏʀ ᴅᴀᴛᴀ/ᴀʙᴄᴅ.json."
         )
         return
@@ -967,42 +967,42 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         target = find_repository(state, context.user_data.get("selected_repo_id", ""))
         file_path = normalize_file_path(text)
         if not target or not file_path:
-            await send_panel(update, "⟦ ғɪʟᴇ ᴘᴀᴛʜ ɪs ɪɴᴠᴀʟɪᴅ · ᴛʀʏ ᴀ ʀᴇʟᴀᴛɪᴠᴇ ғɪʟᴇ ɴᴀᴍᴇ ⟧")
+            await send_panel(update, "❑ ғɪʟᴇ ᴘᴀᴛʜ ɪs ɪɴᴠᴀʟɪᴅ · ᴛʀʏ ᴀ ʀᴇʟᴀᴛɪᴠᴇ ғɪʟᴇ ɴᴀᴍᴇ ❒")
             return
         target.file_path = file_path
         clear_flow(context)
-        await send_panel(update, f"⟦ ʙᴏᴛ ғɪʟᴇ sᴇᴛ · {target.repo_id} · {file_path} ⟧")
+        await send_panel(update, f"❑ ʙᴏᴛ ғɪʟᴇ sᴇᴛ · {target.repo_id} · {file_path} ❒")
         return
 
     if step == "upload_repo":
         target = find_repository(state, text)
         if not target:
-            await send_panel(update, "⟦ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ⟧")
+            await send_panel(update, "❑ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ❒")
             return
         context.user_data["selected_repo_id"] = target.repo_id
         context.user_data["flow_step"] = "upload_document"
         await send_panel(
             update,
-            f"⟦ ᴜᴘʟᴏᴀᴅ ғɪʟᴇ · {target.repo_id} ⟧\n\n"
+            f"❑ ᴜᴘʟᴏᴀᴅ ғɪʟᴇ · {target.repo_id} ❒\n\n"
             f"sᴇɴᴅ ᴀ ᴛᴇʟᴇɢʀᴀᴍ ᴅᴏᴄᴜᴍᴇɴᴛ ᴜᴘ ᴛᴏ {MAX_UPLOAD_BYTES // 1000} ᴋʙ.\n"
             "ɪᴛ ᴡɪʟʟ ʙᴇ ᴄᴏᴍᴍɪᴛᴛᴇᴅ ɴᴏᴡ ᴜsɪɴɢ ɪᴛs ғɪʟᴇ ɴᴀᴍᴇ.",
         )
         return
 
     if step == "upload_document":
-        await send_panel(update, "⟦ sᴇɴᴅ ᴛʜᴇ ғɪʟᴇ ᴀs ᴀ ᴛᴇʟᴇɢʀᴀᴍ ᴅᴏᴄᴜᴍᴇɴᴛ, ᴏʀ ᴜsᴇ /cancel ⟧")
+        await send_panel(update, "❑ sᴇɴᴅ ᴛʜᴇ ғɪʟᴇ ᴀs ᴀ ᴛᴇʟᴇɢʀᴀᴍ ᴅᴏᴄᴜᴍᴇɴᴛ, ᴏʀ ᴜsᴇ /cancel ❒")
         return
 
     if step == "interval_repo":
         target = find_repository(state, text)
         if not target:
-            await send_panel(update, "⟦ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ⟧")
+            await send_panel(update, "❑ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ❒")
             return
         context.user_data["selected_repo_id"] = target.repo_id
         context.user_data["flow_step"] = "interval_value"
         await send_panel(
             update,
-            f"⟦ ɪɴᴛᴇʀᴠᴀʟ · {target.repo_id} ⟧\n\n"
+            f"❑ ɪɴᴛᴇʀᴠᴀʟ · {target.repo_id} ❒\n\n"
             f"sᴇɴᴅ ᴍɪɴᴜᴛᴇs · {MIN_INTERVAL_MINUTES}–{MAX_INTERVAL_MINUTES}.\n"
             f"ᴄᴜʀʀᴇɴᴛ · {target.interval_minutes}",
         )
@@ -1013,26 +1013,26 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         try:
             interval = int(text)
         except ValueError:
-            await send_panel(update, "⟦ sᴇɴᴅ ᴀ ᴡʜᴏʟᴇ ɴᴜᴍʙᴇʀ ɪɴ ᴍɪɴᴜᴛᴇs ⟧")
+            await send_panel(update, "❑ sᴇɴᴅ ᴀ ᴡʜᴏʟᴇ ɴᴜᴍʙᴇʀ ɪɴ ᴍɪɴᴜᴛᴇs ❒")
             return
         if not target or not MIN_INTERVAL_MINUTES <= interval <= MAX_INTERVAL_MINUTES:
-            await send_panel(update, f"⟦ ᴇɴᴛᴇʀ ᴀ ᴠᴀʟᴜᴇ ʙᴇᴛᴡᴇᴇɴ {MIN_INTERVAL_MINUTES} ᴀɴᴅ {MAX_INTERVAL_MINUTES} ⟧")
+            await send_panel(update, f"❑ ᴇɴᴛᴇʀ ᴀ ᴠᴀʟᴜᴇ ʙᴇᴛᴡᴇᴇɴ {MIN_INTERVAL_MINUTES} ᴀɴᴅ {MAX_INTERVAL_MINUTES} ❒")
             return
         target.interval_minutes = interval
         clear_flow(context)
-        await send_panel(update, f"⟦ {target.repo_id} · ɪɴᴛᴇʀᴠᴀʟ sᴇᴛ · {interval} ᴍɪɴ ⟧")
+        await send_panel(update, f"❑ {target.repo_id} · ɪɴᴛᴇʀᴠᴀʟ sᴇᴛ · {interval} ᴍɪɴ ❒")
         return
 
     if step == "message_repo":
         target = find_repository(state, text)
         if not target:
-            await send_panel(update, "⟦ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ⟧")
+            await send_panel(update, "❑ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ❒")
             return
         context.user_data["selected_repo_id"] = target.repo_id
         context.user_data["flow_step"] = "message_value"
         await send_panel(
             update,
-            f"⟦ ᴄᴏᴍᴍɪᴛ ᴍᴇssᴀɢᴇ · {target.repo_id} ⟧\n\n"
+            f"❑ ᴄᴏᴍᴍɪᴛ ᴍᴇssᴀɢᴇ · {target.repo_id} ❒\n\n"
             "sᴇɴᴅ ᴀ ᴄᴜsᴛᴏᴍ ᴍᴇssᴀɢᴇ ᴏʀ ᴛʏᴘᴇ ᴅᴇғᴀᴜʟᴛ ᴛᴏ ᴜsᴇ ᴛɪᴍᴇsᴛᴀᴍᴘs.",
         )
         return
@@ -1041,7 +1041,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         target = find_repository(state, context.user_data.get("selected_repo_id", ""))
         if not target:
             clear_flow(context)
-            await send_panel(update, "⟦ ʀᴇᴘᴏ ɴᴏᴛ ғᴏᴜɴᴅ ⟧")
+            await send_panel(update, "❑ ʀᴇᴘᴏ ɴᴏᴛ ғᴏᴜɴᴅ ❒")
             return
         if text.casefold() in {"default", "ᴅᴇғᴀᴜʟᴛ"}:
             target.message_mode = "default"
@@ -1050,36 +1050,36 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             target.message_mode = "custom"
             target.custom_message = text
         else:
-            await send_panel(update, "⟦ ᴍᴇssᴀɢᴇ ᴍᴜsᴛ ʙᴇ 1–200 ᴄʜᴀʀᴀᴄᴛᴇʀs ᴏɴ ᴏɴᴇ ʟɪɴᴇ ⟧")
+            await send_panel(update, "❑ ᴍᴇssᴀɢᴇ ᴍᴜsᴛ ʙᴇ 1–200 ᴄʜᴀʀᴀᴄᴛᴇʀs ᴏɴ ᴏɴᴇ ʟɪɴᴇ ❒")
             return
         clear_flow(context)
-        await send_panel(update, f"⟦ {target.repo_id} · ᴄᴏᴍᴍɪᴛ ᴍᴇssᴀɢᴇ sᴀᴠᴇᴅ ⟧")
+        await send_panel(update, f"❑ {target.repo_id} · ᴄᴏᴍᴍɪᴛ ᴍᴇssᴀɢᴇ sᴀᴠᴇᴅ ❒")
         return
 
     if step == "commit_repo":
         target = find_repository(state, text)
         if not target:
-            await send_panel(update, "⟦ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ⟧")
+            await send_panel(update, "❑ ʀᴇᴘᴏ ɪᴅ ɴᴏᴛ ғᴏᴜɴᴅ · sᴇɴᴅ ᴀɴ ɪᴅ ғʀᴏᴍ ᴛʜᴇ ʟɪsᴛ ❒")
             return
         account = state.accounts.get(target.account_id)
         if not account:
             clear_flow(context)
-            await send_panel(update, "⟦ ʟɪɴᴋᴇᴅ ᴀᴄᴄᴏᴜɴᴛ ɴᴏᴛ ғᴏᴜɴᴅ ⟧")
+            await send_panel(update, "❑ ʟɪɴᴋᴇᴅ ᴀᴄᴄᴏᴜɴᴛ ɴᴏᴛ ғᴏᴜɴᴅ ❒")
             return
         clear_flow(context)
         try:
             target.last_commit = await create_activity_commit(account, target)
             target.last_error = ""
-            await send_panel(update, f"⟦ ᴄᴏᴍᴍɪᴛ sᴜᴄᴄᴇss · {target.repo_id} · {target.last_commit} ⟧")
+            await send_panel(update, f"❑ ᴄᴏᴍᴍɪᴛ sᴜᴄᴄᴇss · {target.repo_id} · {target.last_commit} ❒")
         except GitHubError as error:
             target.last_error = f"ɢɪᴛʜᴜʙ ʀᴇǫᴜᴇsᴛ ғᴀɪʟᴇᴅ · {error.status_code}"
-            await send_panel(update, f"⟦ {target.repo_id} · {target.last_error} ⟧")
+            await send_panel(update, f"❑ {target.repo_id} · {target.last_error} ❒")
         except (httpx.HTTPError, ValueError, UnicodeError, json.JSONDecodeError):
             target.last_error = "ғɪʟᴇ ᴏʀ ɴᴇᴛᴡᴏʀᴋ ᴇʀʀᴏʀ"
-            await send_panel(update, f"⟦ {target.repo_id} · {target.last_error} ⟧")
+            await send_panel(update, f"❑ {target.repo_id} · {target.last_error} ❒")
         return
 
-    await send_panel(update, "⟦ ᴜsᴇ ᴀ ᴋᴇʏʙᴏᴀʀᴅ ᴄᴏɴᴛʀᴏʟ ᴏʀ ᴛʏᴘᴇ /cancel ⟧")
+    await send_panel(update, "❑ ᴜsᴇ ᴀ ᴋᴇʏʙᴏᴀʀᴅ ᴄᴏɴᴛʀᴏʟ ᴏʀ ᴛʏᴘᴇ /cancel ❒")
 
 
 async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -1089,50 +1089,50 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     user_id = update.effective_user.id
     step = context.user_data.get("flow_step")
     if step != "upload_document":
-        await send_panel(update, "⟦ ᴛᴀᴘ ᴜᴘʟᴏᴀᴅ ғɪʟᴇ ᴀɴᴅ sᴇʟᴇᴄᴛ ᴀ ʀᴇᴘᴏ ғɪʀsᴛ ⟧")
+        await send_panel(update, "❑ ᴛᴀᴘ ᴜᴘʟᴏᴀᴅ ғɪʟᴇ ᴀɴᴅ sᴇʟᴇᴄᴛ ᴀ ʀᴇᴘᴏ ғɪʀsᴛ ❒")
         return
     document = update.effective_message.document
     if document.file_size and document.file_size > MAX_UPLOAD_BYTES:
         clear_flow(context)
-        await send_panel(update, f"⟦ ғɪʟᴇ ᴛᴏᴏ ʟᴀʀɢᴇ · ᴍᴀx {MAX_UPLOAD_BYTES // 1000} ᴋʙ ⟧")
+        await send_panel(update, f"❑ ғɪʟᴇ ᴛᴏᴏ ʟᴀʀɢᴇ · ᴍᴀx {MAX_UPLOAD_BYTES // 1000} ᴋʙ ❒")
         return
     state = get_user_state(context, user_id)
     target = find_repository(state, context.user_data.get("selected_repo_id", ""))
     account = state.accounts.get(target.account_id) if target else None
     if not target or not account:
         clear_flow(context)
-        await send_panel(update, "⟦ ʀᴇᴘᴏ ᴏʀ ᴀᴄᴄᴏᴜɴᴛ ɴᴏᴛ ғᴏᴜɴᴅ ⟧")
+        await send_panel(update, "❑ ʀᴇᴘᴏ ᴏʀ ᴀᴄᴄᴏᴜɴᴛ ɴᴏᴛ ғᴏᴜɴᴅ ❒")
         return
     raw_name = document.file_name or ""
     filename = raw_name.replace("\\", "/").split("/")[-1]
     file_path = normalize_file_path(filename)
     if not file_path:
         clear_flow(context)
-        await send_panel(update, "⟦ ғɪʟᴇ ɴᴀᴍᴇ ɪs ɴᴏᴛ sᴜᴘᴘᴏʀᴛᴇᴅ ⟧")
+        await send_panel(update, "❑ ғɪʟᴇ ɴᴀᴍᴇ ɪs ɴᴏᴛ sᴜᴘᴘᴏʀᴛᴇᴅ ❒")
         return
     try:
         telegram_file = await context.bot.get_file(document.file_id)
         content = bytes(await telegram_file.download_as_bytearray())
         if len(content) > MAX_UPLOAD_BYTES:
             clear_flow(context)
-            await send_panel(update, f"⟦ ғɪʟᴇ ᴛᴏᴏ ʟᴀʀɢᴇ · ᴍᴀx {MAX_UPLOAD_BYTES // 1000} ᴋʙ ⟧")
+            await send_panel(update, f"❑ ғɪʟᴇ ᴛᴏᴏ ʟᴀʀɢᴇ · ᴍᴀx {MAX_UPLOAD_BYTES // 1000} ᴋʙ ❒")
             return
         commit_sha = await create_uploaded_commit(account, target, file_path, content)
     except GitHubError as error:
         target.last_error = f"ɢɪᴛʜᴜʙ ʀᴇǫᴜᴇsᴛ ғᴀɪʟᴇᴅ · {error.status_code}"
-        await send_panel(update, f"⟦ ᴜᴘʟᴏᴀᴅ ᴄᴏᴍᴍɪᴛ ғᴀɪʟᴇᴅ · {target.last_error} ⟧")
+        await send_panel(update, f"❑ ᴜᴘʟᴏᴀᴅ ᴄᴏᴍᴍɪᴛ ғᴀɪʟᴇᴅ · {target.last_error} ❒")
         return
     except (httpx.HTTPError, UnicodeError):
-        await send_panel(update, "⟦ ғɪʟᴇ ᴜᴘʟᴏᴀᴅ ғᴀɪʟᴇᴅ · ᴛʀʏ ᴀɢᴀɪɴ ⟧")
+        await send_panel(update, "❑ ғɪʟᴇ ᴜᴘʟᴏᴀᴅ ғᴀɪʟᴇᴅ · ᴛʀʏ ᴀɢᴀɪɴ ❒")
         return
     except Exception as error:
         logger.error("File transfer failed: %s", type(error).__name__)
-        await send_panel(update, "⟦ ғɪʟᴇ ᴄᴏᴜʟᴅ ɴᴏᴛ ʙᴇ ᴅᴏᴡɴʟᴏᴀᴅᴇᴅ ⟧")
+        await send_panel(update, "❑ ғɪʟᴇ ᴄᴏᴜʟᴅ ɴᴏᴛ ʙᴇ ᴅᴏᴡɴʟᴏᴀᴅᴇᴅ ❒")
         return
     clear_flow(context)
     target.last_commit = commit_sha
     target.last_error = ""
-    await send_panel(update, f"⟦ ғɪʟᴇ ᴄᴏᴍᴍɪᴛᴛᴇᴅ · {target.repo_id} · {file_path} · {commit_sha} ⟧")
+    await send_panel(update, f"❑ ғɪʟᴇ ᴄᴏᴍᴍɪᴛᴛᴇᴅ · {target.repo_id} · {file_path} · {commit_sha} ❒")
 
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -1143,7 +1143,7 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
     if isinstance(update, Update) and update.effective_message:
         try:
             await update.effective_message.reply_text(
-                "⟦ ᴜɴᴇxᴘᴇᴄᴛᴇᴅ ᴇʀʀᴏʀ · ᴛʀʏ ᴀɢᴀɪɴ ⟧",
+                "❑ ᴜɴᴇxᴘᴇᴄᴛᴇᴅ ᴇʀʀᴏʀ · ᴛʀʏ ᴀɢᴀɪɴ ❒",
                 reply_markup=main_keyboard(),
             )
         except Exception:
