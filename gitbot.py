@@ -28,7 +28,7 @@ MIN_INTERVAL_MINUTES = 1
 MAX_INTERVAL_MINUTES = 43200
 MAX_LOG_LINES = 1000
 MAX_UPLOAD_BYTES = 700_000
-HARDCODED_TELEGRAM_BOT_TOKEN = "PASTE YOUR TELEGRAM BOT TOKEN"
+HARDCODED_TELEGRAM_BOT_TOKEN = " your ᴛᴇʟᴇɢʀᴀᴍ_ʙᴏᴛ_ᴛᴏᴋᴇɴ"
 HARDCODED_ADMIN_IDS: set[int] = set()
 
 BUTTON_ACCOUNTS = "❨ ᴀᴄᴄᴏᴜɴᴛs ❩"
@@ -1150,7 +1150,7 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
             pass
 
 
-def main() -> None:
+def build_application() -> Application:
     bot_token = get_bot_token()
     if not bot_token:
         raise SystemExit(
@@ -1172,7 +1172,88 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Document.ALL, handle_document))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
     application.add_error_handler(error_handler)
-    application.run_polling(drop_pending_updates=True)
+    return application
+
+
+async def health_check(reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
+    """Minimal HTTP health endpoint for Render Web Services."""
+    try:
+        await asyncio.wait_for(reader.read(4096), timeout=5)
+        body = b"GitBot is running"
+        response = (
+            b"HTTP/1.1 200 OK\r\n"
+            b"Content-Type: text/plain; charset=utf-8\r\n"
+            b"Content-Length: " + str(len(body)).encode() + b"\r\n"
+            b"Connection: close\r\n\r\n" + body
+        )
+        writer.write(response)
+        await writer.drain()
+    except (asyncio.TimeoutError, ConnectionError):
+        pass
+    finally:
+        writer.close()
+        try:
+            await writer.wait_closed()
+        except ConnectionError:
+            pass
+
+
+async def run_bot_once() -> None:
+    # Render Web Services provide PORT; Background Workers normally do not.
+    mode = os.getenv("GITBOT_MODE", "").strip().lower()
+    port_value = os.getenv("PORT", "").strip()
+    web_mode = mode == "web" or (mode != "worker" and bool(port_value))
+    port = int(port_value or "10000")
+    application = build_application()
+    server = None
+    initialized = False
+    started = False
+    polling_started = False
+    try:
+        await application.initialize()
+        initialized = True
+        if application.updater is None:
+            raise RuntimeError("Telegram updater is unavailable")
+        await application.updater.start_polling(drop_pending_updates=True)
+        polling_started = True
+        await application.start()
+        started = True
+        if web_mode:
+            server = await asyncio.start_server(health_check, host="0.0.0.0", port=port)
+            logger.info("GitBot web mode listening on 0.0.0.0:%s", port)
+        else:
+            logger.info("GitBot background worker mode started")
+        # Keep the same asyncio loop alive for Telegram polling and scheduled tasks.
+        await asyncio.Event().wait()
+    finally:
+        if server is not None:
+            server.close()
+            await server.wait_closed()
+        if polling_started and application.updater is not None:
+            await application.updater.stop()
+        if started:
+            await application.stop()
+        if initialized:
+            await application.shutdown()
+
+
+def main() -> None:
+    restart_delay = max(1, int(os.getenv("RESTART_DELAY", "5")))
+    while True:
+        try:
+            asyncio.run(run_bot_once())
+        except KeyboardInterrupt:
+            logger.info("GitBot stopped by user")
+            break
+        except SystemExit:
+            raise
+        except Exception:
+            logger.exception("GitBot stopped unexpectedly; restarting in %s seconds", restart_delay)
+            try:
+                import time
+                time.sleep(restart_delay)
+            except KeyboardInterrupt:
+                break
 
 
 if __name__ == "__main__":
