@@ -8,7 +8,7 @@
 Manage GitHub accounts, repositories, activity files, and commit schedules from a private Telegram chat.
 
 ## Live Test 
-**git_contributor_bot** · [🌊 𝐆𝐈𝐓 𝐂𝐎𝐍𝐓𝐑𝐈𝐁𝐔𝐓𝐎𝐑 👨‍💻](https://t.me/git_contributor_bot)
+**git_contributor_bot** · [🌊 𝐆𝐈𝐓 𝐂𝐎𝐍𝐓𝐑𝐈𝐁𝐔𝐓𝐎𝐑 👨‍💻](https://t.me/GITCONTRIBUTER_BOT)
 
 **Built by SIFAT** · [GitHub · FX-SIF4T](https://github.com/FX-SIF4T)
 
