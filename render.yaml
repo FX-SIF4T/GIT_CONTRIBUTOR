@@ -1,0 +1,8 @@
+services:
+  - type: worker
+    name: git-contributor
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    autoDeploy: true
